@@ -1,0 +1,50 @@
+# Enable rewrite engine
+RewriteEngine On
+
+# Set base directory
+RewriteBase /disciplinary-system/
+
+# Allow CORS for API endpoints
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
+
+# Handle OPTIONS requests for CORS
+RewriteCond %{REQUEST_METHOD} OPTIONS
+RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Redirect all requests to appropriate PHP files
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Authentication routes
+RewriteRule ^api/login$ api/auth/login.php [L]
+RewriteRule ^api/logout$ api/auth/logout.php [L]
+RewriteRule ^api/me$ api/auth/me.php [L]
+
+# Admin routes - Students
+RewriteRule ^api/students$ api/admin/students/index.php [L]
+RewriteRule ^api/students/([0-9]+)$ api/admin/students/student.php?id=$1 [L]
+
+# Admin routes - Staff
+RewriteRule ^api/staff$ api/admin/staff/index.php [L]
+RewriteRule ^api/staff/([0-9]+)$ api/admin/staff/staff.php?id=$1 [L]
+
+# Admin routes - Incidents
+RewriteRule ^api/incidents$ api/admin/incidents/index.php [L]
+RewriteRule ^api/incidents/([0-9]+)$ api/admin/incidents/incident.php?id=$1 [L]
+RewriteRule ^api/incidents/([0-9]+)/judgments$ api/admin/incidents/judgments.php?id=$1 [L]
+
+# Admin routes - Analytics
+RewriteRule ^api/incidents/analytics/total$ api/admin/incidents/analytics/total.php [L]
+RewriteRule ^api/incidents/analytics/by-type$ api/admin/incidents/analytics/by-type.php [L]
+RewriteRule ^api/incidents/analytics/trend$ api/admin/incidents/analytics/trend.php [L]
+
+# Staff routes
+RewriteRule ^api/incidents/mine$ api/staff/incidents/mine.php [L]
+
+# Student routes
+RewriteRule ^api/my-records$ api/student/my-records.php [L]
+
+# Prevent directory listing
+Options -Indexes
