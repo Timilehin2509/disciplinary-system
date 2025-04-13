@@ -4,18 +4,21 @@ RewriteEngine On
 # Set base directory
 RewriteBase /disciplinary-system/
 
-# Allow CORS for API endpoints
-Header set Access-Control-Allow-Origin "*"
-Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
-Header set Access-Control-Allow-Headers "Content-Type, Authorization, X-Requested-With"
-
-# Handle OPTIONS requests for CORS
+# Handle preflight requests
 RewriteCond %{REQUEST_METHOD} OPTIONS
 RewriteRule ^(.*)$ $1 [R=200,L]
+
+# Enable CORS
+Header set Access-Control-Allow-Origin "*"
+Header set Access-Control-Allow-Methods "GET, POST, PUT, DELETE, OPTIONS"
+Header set Access-Control-Allow-Headers "Content-Type, Authorization"
 
 # Redirect all requests to appropriate PHP files
 RewriteCond %{REQUEST_FILENAME} !-f
 RewriteCond %{REQUEST_FILENAME} !-d
+
+# Setup route (add this before other routes)
+RewriteRule ^api/setup$ api/setup.php [L]
 
 # Authentication routes
 RewriteRule ^api/login$ api/auth/login.php [L]
@@ -26,7 +29,7 @@ RewriteRule ^api/me$ api/auth/me.php [L]
 RewriteRule ^api/students$ api/admin/students/index.php [L]
 RewriteRule ^api/students/([0-9]+)$ api/admin/students/student.php?id=$1 [L]
 
-# Admin routes - Staff
+# Admin routes - Staff (Fix this)
 RewriteRule ^api/staff$ api/admin/staff/index.php [L]
 RewriteRule ^api/staff/([0-9]+)$ api/admin/staff/staff.php?id=$1 [L]
 
@@ -42,6 +45,8 @@ RewriteRule ^api/incidents/analytics/trend$ api/admin/incidents/analytics/trend.
 
 # Staff routes
 RewriteRule ^api/incidents/mine$ api/staff/incidents/mine.php [L]
+RewriteRule ^api/incidents$ api/staff/incidents/index.php [L]
+RewriteRule ^api/incidents/([0-9]+)$ api/staff/incidents/incident.php?id=$1 [L]
 
 # Student routes
 RewriteRule ^api/my-records$ api/student/my-records.php [L]

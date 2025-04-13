@@ -16,7 +16,7 @@ class Incident {
     public $updated_by;
 
     public function __construct() {
-        $database = new Database();
+        $database = Database::getInstance();
         $this->conn = $database->getConnection();
     }
 
@@ -126,26 +126,36 @@ class Incident {
     }
 
     public function updateJudgments($incident_id, $judgments) {
+        // Validate punishment types
         foreach($judgments as $judgment) {
             if (!$this->validatePunishment($judgment->punishment)) {
                 return false;
             }
         }
-        $query = "UPDATE incident_students 
-                SET punishment = :punishment, details = :details
-                WHERE incident_id = :incident_id AND student_id = :student_id";
+        
+        try {
+            $this->conn->beginTransaction();
+            
+            foreach($judgments as $judgment) {
+                $query = "UPDATE incident_students 
+                        SET punishment = :punishment, details = :details
+                        WHERE incident_id = :incident_id AND student_id = :student_id";
 
-        $stmt = $this->conn->prepare($query);
-        
-        foreach($judgments as $judgment) {
-            $stmt->bindParam(':incident_id', $incident_id);
-            $stmt->bindParam(':student_id', $judgment->student_id);
-            $stmt->bindParam(':punishment', $judgment->punishment);
-            $stmt->bindParam(':details', $judgment->details);
-            $stmt->execute();
+                $stmt = $this->conn->prepare($query);
+                $stmt->execute([
+                    ':incident_id' => $incident_id,
+                    ':student_id' => $judgment->student_id,
+                    ':punishment' => $judgment->punishment,
+                    ':details' => $judgment->details
+                ]);
+            }
+            
+            $this->conn->commit();
+            return true;
+        } catch(Exception $e) {
+            $this->conn->rollBack();
+            return false;
         }
-        
-        return true;
     }
 
     public function getTotalCount() {

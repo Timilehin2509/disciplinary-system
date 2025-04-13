@@ -1,4 +1,8 @@
 <?php
+if (!is_dir(__DIR__ . '/../uploads/')) {
+    die("Upload directory does not exist");
+}
+
 return [
     'db_host' => 'localhost',
     'db_port' => '3307',

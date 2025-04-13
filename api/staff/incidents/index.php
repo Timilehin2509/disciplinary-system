@@ -27,21 +27,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $config = require __DIR__ . '/../../../config/config.php';
         $uploadedFiles = [];
         
-        // Check if upload directory exists
-        if (!is_dir($config['upload_dir'])) {
-            Response::error('Upload directory not found');
-        }
-        
-        // Check if directory is writable
-        if (!is_writable($config['upload_dir'])) {
-            Response::error('Upload directory is not writable');
-        }
-        
         foreach ($_FILES['supporting_documents']['tmp_name'] as $key => $tmp_name) {
             $file_name = $_FILES['supporting_documents']['name'][$key];
             $file_ext = strtolower(pathinfo($file_name, PATHINFO_EXTENSION));
             
-            // Validate file extension
             if (!in_array($file_ext, $config['allowed_extensions'])) {
                 Response::error("File type not allowed: $file_name");
             }

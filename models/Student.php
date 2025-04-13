@@ -13,7 +13,7 @@ class Student {
     public $password;
 
     public function __construct() {
-        $database = new Database();
+        $database = Database::getInstance();
         $this->conn = $database->getConnection();
     }
 
