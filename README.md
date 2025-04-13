@@ -2,6 +2,13 @@
 
 A PHP-based REST API for managing school disciplinary records.
 
+## Project Overview
+A comprehensive disciplinary management system that allows schools to:
+- Track student disciplinary incidents
+- Manage incident reports and judgments
+- Generate analytics and reports
+- Maintain secure role-based access
+
 ## Features
 - Authentication system with role-based access (Admin, Staff, Student)
 - Student management
@@ -10,6 +17,21 @@ A PHP-based REST API for managing school disciplinary records.
 - Judgment management
 - Analytics and reporting
 - File upload support for supporting documents
+
+## System Architecture
+- Built on PHP 7.4+ backend
+- MySQL database for data persistence
+- Session-based authentication
+- Role-based access control (RBAC)
+- RESTful API architecture
+
+## Security Features
+- Encrypted passwords using PHP's password_hash()
+- Session timeout after 30 minutes
+- Role-based access control
+- SQL injection prevention using PDO
+- File upload validation
+- XSS protection
 
 ## Requirements
 - PHP 7.4+
@@ -121,3 +143,54 @@ Student:
 
 ## Testing
 Use Postman or similar tool to test the API endpoints. Import the provided Postman collection from `docs/postman_collection.json`.
+
+## Troubleshooting Guide
+
+### Common Issues
+
+1. **Database Connection Errors**
+   - Verify MySQL is running on port 3307
+   - Check credentials in config.php
+   - Ensure database exists
+
+2. **File Upload Issues**
+   - Check uploads directory permissions
+   - Verify file size < 5MB
+   - Ensure file type is supported
+   - Check PHP upload_max_filesize setting
+
+3. **API Access Issues**
+   - Verify Apache mod_rewrite is enabled
+   - Check .htaccess file exists
+   - Confirm correct file permissions
+   - Verify session is active
+
+### Quick Fixes
+```bash
+# Enable mod_rewrite
+sudo a2enmod rewrite  # Linux
+# For Windows: Uncomment LoadModule rewrite_module in httpd.conf
+
+# Fix permissions
+chmod 755 -R api/     # Linux
+chmod 777 uploads/    # Linux
+# Windows: Right-click > Properties > Security > Edit > Add Users > Full Control
+```
+
+## Development Guidelines
+- Follow PSR-4 autoloading standard
+- Use meaningful variable/function names
+- Add comments for complex logic
+- Validate all inputs
+- Handle errors gracefully
+- Log important operations
+
+## Contributing
+1. Fork the repository
+2. Create feature branch
+3. Follow coding standards
+4. Add tests if applicable
+5. Submit pull request
+
+## License
+MIT License - See LICENSE file

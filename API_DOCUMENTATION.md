@@ -59,6 +59,12 @@ Response (200):
 }
 ```
 
+## Request Headers
+```http
+Content-Type: application/json
+Authorization: Bearer {token}  // For protected endpoints
+```
+
 ## Admin Endpoints
 
 ### Students Management
@@ -235,7 +241,108 @@ Response: Array of incidents with judgments
 405 Method Not Allowed: {"error": "Method not allowed"}
 ```
 
+## Response Examples
+
+### Login Success
+```json
+{
+    "message": "Login successful",
+    "user": {
+        "id": 1,
+        "name": "John Teacher",
+        "role": "staff",
+        "email": "john@school.com"
+    }
+}
+```
+
+### Get Student Details
+```json
+{
+    "id": 1,
+    "student_number": "2024001",
+    "name": "Alice Smith",
+    "email": "alice@student.com",
+    "class": "12A"
+}
+```
+
+### List Incidents
+```json
+{
+    "incidents": [
+        {
+            "id": 1,
+            "type": "Academic",
+            "description": "Caught cheating during math exam",
+            "date_of_incidence": "2024-03-20",
+            "status": "Open",
+            "reporter_name": "John Teacher",
+            "involved_students": ["Alice Smith", "Bob Johnson"]
+        }
+    ]
+}
+```
+
+### Analytics Example
+```json
+{
+    "by_type": [
+        {"type": "Academic", "count": 15},
+        {"type": "Behavioral", "count": 8},
+        {"type": "Attendance", "count": 12}
+    ],
+    "trend": [
+        {"date": "2024-03-01", "count": 3},
+        {"date": "2024-03-02", "count": 1}
+    ]
+}
+```
+
 ## File Upload
 - Supported formats: pdf, doc, docx, jpg, jpeg, png
 - Maximum file size: 5MB
 - Files are stored in: `/uploads` directory
+
+## Rate Limiting
+- 100 requests per minute per IP
+- 1000 requests per hour per user
+
+## Versioning
+Current version: v1
+Endpoint format: `/api/v1/{endpoint}`
+
+## Best Practices
+1. Always check response status codes
+2. Implement proper error handling
+3. Use appropriate HTTP methods
+4. Include authentication headers
+5. Validate request payloads
+
+## SDK Examples
+
+### PHP
+```php
+$response = file_get_contents(
+    'http://localhost/disciplinary-system/api/incidents',
+    false,
+    stream_context_create([
+        'http' => [
+            'method' => 'GET',
+            'header' => 'Content-Type: application/json'
+        ]
+    ])
+);
+```
+
+### JavaScript (Fetch)
+```javascript
+fetch('http://localhost/disciplinary-system/api/incidents', {
+    method: 'GET',
+    headers: {
+        'Content-Type': 'application/json'
+    }
+})
+.then(response => response.json())
+.then(data => console.log(data));
+```
